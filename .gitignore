@@ -1,0 +1,5 @@
+
+*.keras
+venv/
+__pycache__/
+*.pyc

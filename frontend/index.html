@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solar Panel Dust Check</title>
+<style>
+  :root {
+    --bg: #eef2f4; --card: #ffffff; --ink: #14202b; --muted: #5d6b78;
+    --line: #d5dde3; --accent: #1f4e79;
+    --clean: #2e8b57; --light: #c8a12a; --moderate: #d9782b; --heavy: #c0392b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif; line-height: 1.5; }
+  main { max-width: 1000px; margin: 0 auto; padding: 32px 20px 56px; }
+  h1 { font-size: 1.7rem; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .layout { display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 760px) { .layout { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+  .drop { display: block; border: 2px dashed var(--line); border-radius: 8px; padding: 26px 12px;
+    text-align: center; cursor: pointer; color: var(--muted); }
+  .drop:hover, .drop:focus-within { border-color: var(--accent); color: var(--accent); }
+  .drop input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; gap: 10px; }
+  select { padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; font: inherit; background: #fff; }
+  button { width: 100%; margin-top: 16px; padding: 11px; border: 0; border-radius: 8px; background: var(--accent);
+    color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+  button:disabled { background: #9db3c6; cursor: not-allowed; }
+  button:focus-visible, select:focus-visible { outline: 3px solid #7fb0da; outline-offset: 2px; }
+  .stage { min-height: 340px; display: flex; align-items: center; justify-content: center; }
+  .stage img { max-width: 100%; border-radius: 8px; display: block; }
+  .empty { color: var(--muted); text-align: center; }
+  .result { display: none; margin-top: 18px; }
+  .big { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .pct { font-size: 3rem; font-weight: 700; line-height: 1; }
+  .badge { padding: 3px 12px; border-radius: 999px; color: #fff; font-weight: 600; font-size: .95rem; }
+  .facts { margin: 12px 0 0; color: var(--muted); }
+  .facts b { color: var(--ink); }
+  .tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+  .tabs button { width: auto; margin: 0; padding: 6px 14px; background: #e3eaef; color: var(--ink); font-weight: 500; }
+  .tabs button.on { background: var(--accent); color: #fff; }
+  .err { color: var(--heavy); margin-top: 12px; display: none; }
+  .legend { color: var(--muted); font-size: .9rem; margin-top: 10px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Solar panel dust check</h1>
+  <p class="sub">Upload a panel photo to see if it is clean, and how much of it is covered in dust.</p>
+
+  <div class="layout">
+    <section class="card">
+      <label class="drop">
+        <input type="file" id="file" accept="image/*">
+        <span id="dropText">Choose a panel photo</span>
+      </label>
+      <div class="row">
+        <label for="grid">Detail level</label>
+        <select id="grid">
+          <option value="4">4 x 4</option>
+          <option value="6" selected>6 x 6</option>
+          <option value="8">8 x 8</option>
+          <option value="10">10 x 10</option>
+        </select>
+      </div>
+      <button id="go" disabled>Analyze panel</button>
+      <div class="err" id="err"></div>
+    </section>
+
+    <section class="card">
+      <div class="tabs" id="tabs" style="display:none">
+        <button class="on" data-view="heat">Dust map</button>
+        <button data-view="orig">Original</button>
+      </div>
+      <div class="stage" id="stage"><p class="empty">Your result will appear here.</p></div>
+      <p class="legend" id="legend" style="display:none">Red squares are dusty areas. Green squares are clean areas.</p>
+
+      <div class="result" id="result">
+        <div class="big">
+          <span class="pct" id="pct"></span>
+          <span class="badge" id="badge"></span>
+        </div>
+        <p class="facts" id="facts"></p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+const API = "http://localhost:8000";
+const COLORS = { Clean: "--clean", Light: "--light", Moderate: "--moderate", Heavy: "--heavy" };
+const $ = id => document.getElementById(id);
+let origURL = "", heatURL = "";
+
+$("file").addEventListener("change", () => {
+  const f = $("file").files[0];
+  $("go").disabled = !f;
+  if (!f) return;
+  $("dropText").textContent = f.name;
+  origURL = URL.createObjectURL(f);
+  heatURL = "";
+  $("stage").innerHTML = `<img src="${origURL}" alt="Selected solar panel">`;
+  $("result").style.display = "none";
+  $("tabs").style.display = "none";
+  $("legend").style.display = "none";
+  $("err").style.display = "none";
+});
+
+$("tabs").addEventListener("click", e => {
+  const view = e.target.dataset.view;
+  if (!view) return;
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b === e.target));
+  $("stage").innerHTML = `<img src="${view === "heat" ? heatURL : origURL}" alt="Solar panel ${view}">`;
+});
+
+async function post(path, file) {
+  const fd = new FormData();
+  fd.append("file", file);
+  const res = await fetch(API + path, { method: "POST", body: fd });
+  if (!res.ok) throw new Error(`${path} failed (${res.status})`);
+  return res.json();
+}
+
+$("go").addEventListener("click", async () => {
+  const file = $("file").files[0];
+  $("go").disabled = true;
+  $("go").textContent = "Analyzing...";
+  $("err").style.display = "none";
+  try {
+    const [pred, cov] = await Promise.all([
+      post("/predict", file),
+      post("/coverage?grid=" + $("grid").value, file)
+    ]);
+    heatURL = "data:image/png;base64," + cov.heatmap_png_base64;
+    $("stage").innerHTML = `<img src="${heatURL}" alt="Dust map of the panel">`;
+    $("pct").textContent = cov.coverage_percent.toFixed(1) + "%";
+    $("badge").textContent = cov.status;
+    $("badge").style.background = `var(${COLORS[cov.status]})`;
+    $("facts").innerHTML =
+      `<b>${cov.dirty_patches} of ${cov.total_patches}</b> areas are dusty. ` +
+      `Overall the panel looks <b>${pred.label}</b> (${pred.confidence}% sure).`;
+    $("result").style.display = "block";
+    $("tabs").style.display = "flex";
+    $("legend").style.display = "block";
+    document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.view === "heat"));
+  } catch (e) {
+    $("err").textContent = "Could not analyze the photo. Check that the backend is running at " + API + ". (" + e.message + ")";
+    $("err").style.display = "block";
+  } finally {
+    $("go").disabled = false;
+    $("go").textContent = "Analyze panel";
+  }
+});
+</script>
+</body>
+</html>
