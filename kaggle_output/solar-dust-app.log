@@ -1,0 +1,13 @@
+[{"stream_name":"stderr","time":5.519635922,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":5.519699732,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":6.240617599,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":6.240663503,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":8.359402206,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":10.728864912,"data":"[NbConvertApp] Support files will be in __results___files/\n"}
+,{"stream_name":"stderr","time":10.72927679,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":10.730795036,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":10.731660425,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":10.732615538,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":10.734338162,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":10.735226665999999,"data":"[NbConvertApp] Writing 670909 bytes to __results__.html\n"}
+]
