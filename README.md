@@ -1,5 +1,7 @@
 # Solar Panel Dust Detection
 
+DATASET LINK - https://universe.roboflow.com/august-4t80o/solar-dust?utm_source=chatgpt.com
+
 Upload a photo of a solar panel and the app highlights the dusty area and reports what percentage of the image it covers.
 
 A U-Net (ResNet34 encoder) segmentation model is trained on Kaggle, exported to ONNX, and served by a FastAPI backend. A single-page frontend sends images to the API and shows the result.
