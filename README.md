@@ -1,6 +1,6 @@
 # Solar Panel Dust Detection
 
-DATASET LINK - https://universe.roboflow.com/august-4t80o/solar-dust?utm_source=chatgpt.com
+DATASET LINK -(https://universe.roboflow.com/august-4t80o/solar-dust)
 
 Upload a photo of a solar panel and the app highlights the dusty area and reports what percentage of the image it covers.
 
