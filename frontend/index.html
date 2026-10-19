@@ -3,96 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b2342">
 <title>Solar Panel Dust Check</title>
 <style>
-  :root {
-    --bg: #eef1f4; --card: #ffffff; --ink: #14202b; --muted: #5d6b78; --line: #d5dce3;
-    --panel: #1c3a5a; --dust: #f59e0b; --clean: #1f8a5b; --bad: #b3261e;
-    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg: #0f1720; --card: #17222e; --ink: #e8eef4; --muted: #93a3b3; --line: #2a3947; --panel: #7fb0e0; }
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); }
-  main { max-width: 920px; margin: 0 auto; padding: 32px 20px 56px; }
-  h1 { font-size: 1.7rem; margin: 0 0 4px; letter-spacing: -0.01em; }
-  .sub { color: var(--muted); margin: 0 0 24px; }
-  .drop {
-    display: block; border: 2px dashed var(--line); border-radius: 10px; background: var(--card);
-    padding: 36px 20px; text-align: center; cursor: pointer; color: var(--muted);
-  }
-  .drop:hover, .drop.over, .drop:focus-within { border-color: var(--panel); color: var(--ink); }
-  .drop input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-  button {
-    margin-top: 16px; padding: 11px 22px; font: inherit; font-weight: 600; color: #fff;
-    background: var(--panel); border: 0; border-radius: 8px; cursor: pointer;
-  }
-  @media (prefers-color-scheme: dark) { button { color: #0f1720; } }
-  button:disabled { opacity: .45; cursor: not-allowed; }
-  button:focus-visible, .drop:focus-within { outline: 3px solid var(--dust); outline-offset: 2px; }
-  #err { color: var(--bad); margin-top: 14px; min-height: 1.2em; }
-  #result { display: none; margin-top: 20px; }
-  .head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
-  .cov { font-size: 2.6rem; font-weight: 700; letter-spacing: -0.02em; }
-  .tag { font-weight: 600; padding: 3px 12px; border-radius: 999px; color: #fff; background: var(--clean); }
-  .tag.dirty { background: var(--dust); color: #14202b; }
-  .bar { height: 10px; border-radius: 6px; background: var(--line); margin: 12px 0 6px; overflow: hidden; }
-  .bar > i { display: block; height: 100%; width: 0; background: var(--dust); transition: width .5s ease; }
-  .meta { color: var(--muted); font-size: .92rem; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px; }
-  figure { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
-  figure img { width: 100%; display: block; border-radius: 6px; background: #000; }
-  figcaption { color: var(--muted); font-size: .88rem; margin-top: 8px; }
+:root{color-scheme:light;--bg:#f3f7fc;--card:#fff;--ink:#14253d;--muted:#65758b;--line:#dce6f1;--blue:#124c8c;--navy:#0b2342;--dust:#f3a712;--clean:#16845b;--bad:#b3261e;font-family:Inter,"Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--ink);background:radial-gradient(circle at 8% 0%,#dcecff 0,transparent 28rem),var(--bg)}
+main{width:min(1060px,100%);margin:auto;padding:30px 22px 48px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:26px}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;color:#fff;background:linear-gradient(145deg,#287ec4,var(--navy));font-size:24px}.brand-name{font-size:.84rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}.brand-caption{font-size:.8rem;color:var(--muted);margin-top:3px}.badge{display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#3d5874;font-size:.8rem}.badge i{width:8px;height:8px;border-radius:50%;background:var(--clean)}
+.hero{position:relative;overflow:hidden;padding:clamp(26px,5vw,48px);border-radius:24px;color:#fff;background:linear-gradient(120deg,var(--navy),var(--blue) 68%,#287ec4);box-shadow:0 18px 45px #14345814}.hero:after{content:"";position:absolute;width:300px;height:300px;right:-70px;top:-170px;border:1px solid #ffffff25;border-radius:50%;box-shadow:0 0 0 38px #ffffff0b,0 0 0 78px #ffffff08;pointer-events:none}.eyebrow{font-size:.74rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#ffda82;margin-bottom:14px}.eyebrow:before{content:"";display:inline-block;width:22px;height:2px;background:#ffca53;vertical-align:middle;margin-right:8px}h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.08;letter-spacing:-.045em;margin:0;max-width:700px}.sub{max-width:650px;margin:15px 0 0;color:#d9e9fa;font-size:1rem;line-height:1.7}.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}.chip{padding:8px 11px;border:1px solid #ffffff30;border-radius:9px;background:#ffffff12;color:#f1f7ff;font-size:.8rem}
+.upload-card{margin-top:22px;padding:24px;background:var(--card);border:1px solid var(--line);border-radius:19px;box-shadow:0 18px 45px #1434580c}.section-heading{display:flex;align-items:center;gap:12px;margin-bottom:18px}.heading-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#eaf3ff;color:var(--blue);font-size:22px}h2{font-size:1.06rem;letter-spacing:-.02em;margin:0}.section-note{font-size:.87rem;color:var(--muted);margin:5px 0 0;line-height:1.5}
+.drop{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;min-height:185px;padding:24px 16px;text-align:center;cursor:pointer;border:1.5px dashed #a8c3df;border-radius:15px;background:#f8fbff;color:var(--muted);transition:.2s}.drop:hover,.drop.over,.drop:focus-within{border-color:var(--blue);background:#eef6ff;color:var(--ink)}.upload-icon{width:52px;height:52px;display:grid;place-items:center;border-radius:15px;background:#e3efff;color:var(--blue);font-size:27px}.drop-title{color:var(--ink);font-weight:750}.drop-hint{font-size:.83rem}.drop input{position:absolute;opacity:0;width:1px;height:1px}.file-pill{display:none;max-width:100%;overflow-wrap:anywhere;padding:6px 11px;border-radius:8px;color:var(--blue);background:#e7f1ff;font-size:.8rem;font-weight:650}
+.actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:17px}button{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 20px;color:#fff;background:var(--blue);border:0;border-radius:10px;font:inherit;font-weight:750;cursor:pointer;box-shadow:0 7px 16px #124c8c2b;transition:.2s}button:hover:not(:disabled){background:var(--navy);transform:translateY(-1px)}button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}button:focus-visible,.drop:focus-within{outline:3px solid var(--dust);outline-offset:3px}.action-hint{font-size:.82rem;color:var(--muted)}#err{color:var(--bad);margin-top:13px;min-height:1.2em;font-size:.9rem}
+#result{display:none;margin-top:24px}.result-top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:24px;background:#fff;border:1px solid var(--line);border-radius:19px;box-shadow:0 18px 45px #1434580c}.result-label{font-size:.8rem;color:var(--muted);font-weight:750;letter-spacing:.08em;text-transform:uppercase}.head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:6px}.cov{font-size:clamp(2.4rem,6vw,3.4rem);line-height:1.1;font-weight:800;letter-spacing:-.05em;color:var(--navy)}.tag{font-size:.82rem;font-weight:800;padding:7px 13px;border-radius:999px;color:#fff;background:var(--clean)}.tag.dirty{background:#ffe2a0;color:#714500}.bar{height:10px;border-radius:6px;background:#e8edf3;margin:16px 0 8px;overflow:hidden}.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f7c64a,#e99508);border-radius:inherit;transition:width .5s}.meta{font-size:.9rem;color:var(--muted);line-height:1.55}.results-heading{margin:25px 0 13px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}figure{min-width:0;margin:0;padding:11px;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:15px;box-shadow:0 8px 25px #1434580b}figure img{width:100%;aspect-ratio:4/3;object-fit:contain;display:block;border-radius:9px;background:#edf1f6}figcaption{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:.87rem;font-weight:750;margin:12px 3px 3px}.dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:var(--blue)}figure:nth-child(2) .dot{background:var(--dust)}figure:nth-child(3) .dot{background:#202a38}.footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:27px;padding-top:17px;border-top:1px solid var(--line);color:var(--muted);font-size:.78rem}.footer strong{color:var(--blue)}
+@media(max-width:720px){main{padding:20px 14px 36px}.topbar{align-items:flex-start}.badge{font-size:.73rem;padding:8px}.hero{border-radius:19px}.upload-card{padding:17px}.grid{grid-template-columns:1fr}figure img{aspect-ratio:16/10}}
+@media(max-width:440px){.badge{display:none}h1{font-size:2rem}.hero{padding:25px 20px}.drop{min-height:165px}.actions button{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important}}
 </style>
 </head>
 <body>
 <main>
-  <h1>Solar panel dust check</h1>
+<header class="topbar">
+  <div class="brand"><div class="brand-mark" aria-hidden="true">☼</div><div><div class="brand-name">Solar Panel Dust Check</div><div class="brand-caption">AI-powered solar panel image analysis</div></div></div>
+  <div class="badge"><i></i> Image analysis</div>
+</header>
+<section class="hero">
+  <div class="eyebrow">AI · Semantic segmentation</div>
+  <h1>See the dust.<br>Measure the coverage.</h1>
   <p class="sub">Upload a photo of a panel. The model marks the dusty area and reports how much of the image it covers.</p>
-
+  <div class="chips"><span class="chip">▦ Pixel-level dust mask</span><span class="chip">⌁ Coverage percentage</span><span class="chip">✓ AI-assisted inspection</span></div>
+</section>
+<section class="upload-card">
+  <div class="section-heading"><div class="heading-icon" aria-hidden="true">⇧</div><div><h2>Upload a solar panel image</h2><p class="section-note">Choose an image file or drag and drop it into the upload area.</p></div></div>
   <label class="drop" id="drop">
-    <input type="file" id="file" accept="image/*">
-    <span id="dropText">Drop a panel photo here, or click to choose one</span>
+    <input type="file" id="file" accept="image/*" aria-label="Choose a solar panel image">
+    <span class="upload-icon" aria-hidden="true">▧</span>
+    <span class="drop-title" id="dropText">Drop a panel photo here, or click to choose one</span>
+    <span class="drop-hint">Select a JPG, PNG, or other supported image</span>
+    <span class="file-pill" id="filePill"></span>
   </label>
-  <button id="go" disabled>Analyze image</button>
-  <div id="err" role="alert"></div>
-
-  <section id="result" aria-live="polite">
-    <div class="head">
-      <span class="cov" id="cov">0%</span>
-      <span class="tag" id="tag">Clean</span>
-    </div>
-    <div class="bar"><i id="fill"></i></div>
-    <div class="meta" id="meta"></div>
-    <div class="grid">
-      <figure><img id="orig" alt="Uploaded panel"><figcaption>Your photo</figcaption></figure>
-      <figure><img id="over" alt="Dust highlighted in amber"><figcaption>Dust highlighted</figcaption></figure>
-      <figure><img id="mask" alt="Dust mask"><figcaption>Dust mask (white = dust)</figcaption></figure>
-    </div>
-  </section>
+  <div class="actions"><button id="go" disabled>⌕ &nbsp; Analyze image</button><span class="action-hint">The selected image will be analyzed by the connected model.</span></div>
+  <div id="err" role="alert" aria-live="polite"></div>
+</section>
+<section id="result" aria-live="polite">
+  <div class="result-top"><div style="flex:1;min-width:0"><div class="result-label">Estimated dust coverage</div><div class="head"><span class="cov" id="cov">0%</span><span class="tag" id="tag">Clean</span></div><div class="bar" aria-hidden="true"><i id="fill"></i></div><div class="meta" id="meta"></div></div></div>
+  <h2 class="results-heading">Analysis results</h2>
+  <div class="grid">
+    <figure><img id="orig" alt="Uploaded panel"><figcaption><span class="dot"></span>Your photo</figcaption></figure>
+    <figure><img id="over" alt="Dust highlighted in amber"><figcaption><span class="dot"></span>Dust highlighted</figcaption></figure>
+    <figure><img id="mask" alt="Dust mask"><figcaption><span class="dot"></span>Dust mask (white = dust)</figcaption></figure>
+  </div>
+</section>
+<footer class="footer"><span><strong>Solar Panel Dust Check</strong> · Semantic segmentation</span><span>Coverage is an image-based estimate.</span></footer>
 </main>
-
 <script>
+  // Keep this URL aligned with your existing FastAPI backend.
   const API_URL = "http://127.0.0.1:8000";
   const $ = id => document.getElementById(id);
   let chosen = null;
+  let originalPreviewUrl = null;
 
   function pick(f) {
-    if (!f || !f.type.startsWith("image/")) { $("err").textContent = "Choose an image file (JPG or PNG)."; return; }
-    chosen = f; $("err").textContent = ""; $("go").disabled = false;
+    if (!f || !f.type.startsWith("image/")) {
+      $("err").textContent = "Choose an image file (JPG or PNG).";
+      return;
+    }
+    if (originalPreviewUrl) URL.revokeObjectURL(originalPreviewUrl);
+    chosen = f;
+    originalPreviewUrl = URL.createObjectURL(f);
+    $("err").textContent = "";
+    $("go").disabled = false;
     $("dropText").textContent = f.name;
+    $("filePill").textContent = f.name;
+    $("filePill").style.display = "inline-block";
   }
+
   $("file").addEventListener("change", e => pick(e.target.files[0]));
-  ["dragover", "dragenter"].forEach(t => $("drop").addEventListener(t, e => { e.preventDefault(); $("drop").classList.add("over"); }));
+  ["dragover", "dragenter"].forEach(t => $("drop").addEventListener(t, e => {
+    e.preventDefault(); $("drop").classList.add("over");
+  }));
   ["dragleave", "drop"].forEach(t => $("drop").addEventListener(t, () => $("drop").classList.remove("over")));
-  $("drop").addEventListener("drop", e => { e.preventDefault(); pick(e.dataTransfer.files[0]); });
+  $("drop").addEventListener("drop", e => {
+    e.preventDefault();
+    pick(e.dataTransfer.files[0]);
+  });
 
   $("go").addEventListener("click", async () => {
     if (!chosen) return;
-    $("go").disabled = true; $("go").textContent = "Analyzing..."; $("err").textContent = "";
+    $("go").disabled = true;
+    $("go").textContent = "Analyzing...";
+    $("err").textContent = "";
     try {
-      const fd = new FormData(); fd.append("file", chosen);
+      const fd = new FormData();
+      fd.append("file", chosen);
       const res = await fetch(API_URL + "/predict", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Request failed");
@@ -102,7 +104,8 @@
         ? "Cannot reach the backend. Start it with: python app.py (port 8000)."
         : e.message;
     } finally {
-      $("go").disabled = false; $("go").textContent = "Analyze image";
+      $("go").disabled = !chosen;
+      $("go").textContent = "⌕  Analyze image";
     }
   });
 
@@ -113,9 +116,10 @@
     $("tag").className = "tag" + (d.label === "dirty" ? " dirty" : "");
     $("fill").style.width = Math.min(100, d.coverage_percent) + "%";
     $("meta").textContent = "Dust covers " + d.coverage_percent.toFixed(1) + "% of the image. Model confidence on dust pixels: " + d.confidence.toFixed(0) + "%.";
-    $("orig").src = URL.createObjectURL(chosen);
+    $("orig").src = originalPreviewUrl || URL.createObjectURL(chosen);
     $("over").src = "data:image/png;base64," + d.overlay_png_base64;
     $("mask").src = "data:image/png;base64," + d.mask_png_base64;
+    $("result").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 </script>
 </body>
