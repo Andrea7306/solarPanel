@@ -1,6 +1,6 @@
 # Solar Panel Dust Detection
 
-DATASET LINK -(https://universe.roboflow.com/august-4t80o/solar-dust)
+DATASET LINK - (https://universe.roboflow.com/august-4t80o/solar-dust)
 
 Upload a photo of a solar panel and the app highlights the dusty area and reports what percentage of the image it covers.
 
@@ -8,7 +8,7 @@ A U-Net (ResNet34 encoder) segmentation model is trained on Kaggle, exported to 
 
 ## How it works
 
-```
+```text
 Browser (index.html)  --image-->  FastAPI (app.py)  -->  ONNX Runtime (UNet-ResNet34)
         ^                                                        |
         +------ coverage %, status, overlay, mask  <-------------+
@@ -16,7 +16,7 @@ Browser (index.html)  --image-->  FastAPI (app.py)  -->  ONNX Runtime (UNet-ResN
 
 ## Project structure
 
-```
+```text
 solar_dust_app/
 ├── backend/
 │   ├── app.py
@@ -43,7 +43,7 @@ solar_dust_app/
 
 The `.onnx` file is large, so it may not be stored in the repo directly. Place it at:
 
-```
+```text
 backend/dust_segmenter.onnx
 ```
 
@@ -101,17 +101,19 @@ Other endpoints: `GET /` (health), `GET /model-info` (model input/output shapes)
 - Output: one-channel logits. The backend applies a sigmoid and a 0.5 threshold.
 - Training: Adam, BCE + Dice loss, mixed precision, early stopping on validation IoU.
 
-Three architectures were compared. UNet-ResNet34 was selected by validation IoU.
+Three architectures were compared. **UNet-ResNet34 was selected based on test IoU.**
 
-| Model | Test IoU | Test Dice | Precision | Recall | Params |
-|---|---|---|---|---|---|
-| UNet (scratch) | 0.5647 | 0.7218 | 0.7203 | 0.7234 | 7.8M |
-| **UNet-ResNet34** (served) | 0.5705 | 0.7265 | 0.6935 | 0.7629 | 24.4M |
-| DeepLabV3+ ResNet34 | 0.5880 | 0.7406 | 0.7188 | 0.7636 | 22.4M |
+| Model | Test Loss | Test IoU | Test Dice | Test Precision | Test Recall |
+|---|---:|---:|---:|---:|---:|
+| **UNet-ResNet34 (served)** | 0.579944 | **0.735649** | **0.845814** | 0.821875 | 0.877501 |
+| DeepLabV3+ ResNet34 | 0.588410 | 0.696955 | 0.818536 | 0.789331 | 0.858587 |
+| UNet (scratch) | 0.644043 | 0.676643 | 0.805514 | 0.803852 | 0.815055 |
+
+**Best model based on Test IoU:** UNet-ResNet34.
 
 ## Limitations
 
-- Segmentation quality is moderate (test IoU about 0.57). Thin or faint dust can be missed.
+- Segmentation quality is moderate. Test IoU for the selected model is approximately 0.736. Thin or faint dust can be missed.
 - Results depend on the photo: strong glare, shadows, or images that are not mostly solar panel can distort the coverage percentage.
 - Coverage is measured over the whole image, not only the panel area.
 
