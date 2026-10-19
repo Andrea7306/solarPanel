@@ -19,13 +19,23 @@ Browser (index.html)  --image-->  FastAPI (app.py)  -->  ONNX Runtime (UNet-ResN
 ```
 solar_dust_app/
 ├── backend/
-│   ├── app.py                  FastAPI server
-│   └── models/
-│       └── dust_segmenter.onnx Trained model (see "Get the model")
+│   ├── app.py
+│   ├── dust_segmenter.onnx
+│   └── dust_segmenter/
+│       └── ... PyTorch model files
+│
 ├── frontend/
-│   └── index.html              Web UI (no build step)
-├── notebooks/
-│   └── solar-panel-dust-detection.ipynb   Training notebook (Kaggle)
+│   └── index.html
+│
+├── models/
+│   ├── best_DeepLabV3Plus_ResNet34/
+│   │   └── ... model files
+│   └── best_UNet_ResNet34/
+│       └── ... model files
+│
+├── kaggle_output/
+│   └── dust_segmenter.onnx
+│
 └── README.md
 ```
 
@@ -34,7 +44,7 @@ solar_dust_app/
 The `.onnx` file is large, so it may not be stored in the repo directly. Place it at:
 
 ```
-backend/models/dust_segmenter.onnx
+backend/dust_segmenter.onnx
 ```
 
 Download link: _add your Git LFS / Release / Drive link here_
